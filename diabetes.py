@@ -17,9 +17,9 @@ class Object(object):
 
     def move(self, direction):
         if self.rect.y <= 2:
-            self.rect.y += 1
+            self.rect.y += RESOLUTION[1]-player.rect.height-10
         elif self.rect.y >= RESOLUTION[1]-player.rect.height:
-            self.rect.y += -1
+            self.rect.y -= RESOLUTION[1]-player.rect.height-10
         elif direction == "up":
             self.rect.y += -8
         elif direction == "down":
@@ -110,22 +110,22 @@ def collision(obj):
     return True
 
 def main():
-    global RUNNING, MAIN, END, barrier_spawn_rate
+    global RUNNING, MENU, END, barrier_spawn_rate
 
     if RUNNING:
         while RUNNING:
 
         # Sets Framerate
             CLOCK.tick(60)
-
+            print player.rect.y
         # Leave Game & Events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     RUNNING = False
                     END = False
-                    MENUE = False
+                    MENU = False
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    MENUE = True
+                    MENU = True
                     RUNNING = False
                     
                 elif event.type == SPAWN:
@@ -205,7 +205,7 @@ def main():
                 if event.type == pygame.QUIT:
                     RUNNING = False
                     END = False
-                    MENUE = False
+                    MENU = False
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     END = False  
 
@@ -215,8 +215,8 @@ def main():
             SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
 
             pygame.display.flip()
-    if MENUE:
-        while MENUE:
+    if MENU:
+        while MENU:
         # Sets Framerate
             CLOCK.tick(60)
 
@@ -225,14 +225,14 @@ def main():
                 if event.type == pygame.QUIT:
                     RUNNING = False
                     END = False
-                    MENUE = False
+                    MENU = False
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    MENUE = False
+                    MENU = False
                     RUNNING = True
 
         # Draw Screen
             SCREEN.fill(BACKGROUND_C)
-            end_text = font.render("Menue " + str(player.score) , True, SCORE_C)
+            end_text = font.render("MENU " + str(player.score) , True, SCORE_C)
             SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
 
             pygame.display.flip()
@@ -275,15 +275,11 @@ pygame.time.set_timer(MINUTE, 1000*10)
 
 RUNNING = True
 END = False
-MENUE = False
+MENU = False
 
 while True:
-
     main()
-    if RUNNING or END or MENUE:
+    if RUNNING or END or MENU:
         continue
     else:
         break
-
-
-
