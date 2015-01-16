@@ -73,6 +73,17 @@ def spawn_barrier():
 
         Barrier(RESOLUTION[0]/3, RESOLUTION[1]/15, x, y, BARRIER_C)
 
+def spawn_candy():
+    while True:
+        x = RESOLUTION[0] + 1
+        y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, 30)
+        for candy in candies:
+            if candy.rect.x == x or candy.rect.y == y:
+                continue
+        break
+
+    Candy(RESOLUTION[0]/30, RESOLUTION[1]/30, x, y, CANDY_C)
+
 def destroy():
     for barrier in barriers:
         if barrier.rect.x < -60:
@@ -86,7 +97,10 @@ def destroy():
 def collision(obj):
     if obj.rect.x <= player.rect.x <= obj.rect.x+obj.rect.width or obj.rect.x <= player.rect.x+player.rect.width <= obj.rect.x+obj.rect.width:
         if obj.rect.y <= player.rect.y <= obj.rect.y+obj.rect.height or obj.rect.y <= player.rect.y+player.rect.height <= obj.rect.y+obj.rect.height:
-            barriers.remove(obj)
+            if type(obj).__name__ == 'Barrier':
+                barriers.remove(obj)
+            if type(obj).__name__ == 'Candy':
+                candies.remove(obj)
             del obj
             return False
     return True
@@ -114,13 +128,11 @@ BACKGROUND_C = (255,248,245)
 player = Player(RESOLUTION[0]/30, RESOLUTION[1]/30, RESOLUTION[0]/2.5, RESOLUTION[1]/2, PLAYER_C, 3)
 health = Health()
 
-# Initialize Barrier Stuffs
+# Initialize Lists 
 barriers = []
-
-# Initialize Candy Stuffs
 candies = []
 
-# Initialize Timer
+# Initialize Timers
 SPAWN = pygame.USEREVENT
 barrier_spawn_rate = 1000
 pygame.time.set_timer(SPAWN, barrier_spawn_rate)
@@ -144,10 +156,10 @@ while RUNNING:
             RUNNING = False
         elif event.type == SPAWN:
             spawn_barrier()
+            spawn_candy()
         elif event.type == MINUTE:
             barrier_spawn_rate -= 200
             pygame.time.set_timer(SPAWN, barrier_spawn_rate)
-
 
 # Garbage Collector 
     destroy()
@@ -163,6 +175,9 @@ while RUNNING:
                 health.colour_2 = (0, 0, 0)
             elif health.colour_3 == (255,7,131):
                 health.colour_2 = (0, 0, 0)
+    for candy in candies:
+        if not collision(candy):
+            print "hey!"
 
 # Move Player
     key = pygame.key.get_pressed()
