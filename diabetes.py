@@ -1,4 +1,4 @@
-import pygame, os
+import pygame, os, pickle
 from random import randint, randrange
 
 # For Release Version Only
@@ -18,12 +18,12 @@ class Object(object):
     def move(self, direction):
         if self.rect.y <= 2:
             self.rect.y += 1
-        elif self.rect.y >= 798:
+        elif self.rect.y >= RESOLUTION[1]-player.rect.height:
             self.rect.y += -1
         elif direction == "up":
-            self.rect.y += -5
+            self.rect.y += -8
         elif direction == "down":
-            self.rect.y += 5
+            self.rect.y += 8
         elif direction == "left":
             self.rect.x += -5
 
@@ -77,7 +77,7 @@ def spawn_barrier():
 def spawn_candy():
     while True:
         x = RESOLUTION[0] + 1
-        y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, 30)
+        y = randrange(0, RESOLUTION[1])
         for candy in candies:
             if candy.rect.x == x or candy.rect.y == y:
                 continue
@@ -90,11 +90,11 @@ def spawn_candy():
 
 def destroy():
     for barrier in barriers:
-        if barrier.rect.x < -60:
+        if barrier.rect.x < -360:
             barriers.remove(barrier)
             del barrier
     for candy in candies:
-        if candy.rect.x < -60:
+        if candy.rect.x < -360:
             candies.remove(candy)
             del candy
 
@@ -119,10 +119,10 @@ pygame.display.set_caption("Diabetes")
 RESOLUTION = (900, 840)
 SCREEN = pygame.display.set_mode(RESOLUTION)
 CLOCK = pygame.time.Clock()
-font = pygame.font.SysFont(None, 60)
+font = pygame.font.SysFont("none", 60)
 
-# Initialize Colours
-CANDY_C = (173,255,47)
+# Colours
+CANDY_C = (198,28,251)
 PLAYER_C = (94,149,152)
 BARRIER_C = (141,122,126)
 HEARTS_C = (255,7,131)
@@ -160,11 +160,13 @@ while RUNNING:
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             RUNNING = False
         elif event.type == SPAWN:
-            spawn_barrier()
+            if len(barriers) < 8:
+                spawn_barrier()
             spawn_candy()
         elif event.type == MINUTE:
-            barrier_spawn_rate -= 200
-            pygame.time.set_timer(SPAWN, barrier_spawn_rate)
+            if not barrier_spawn_rate == 200:
+                barrier_spawn_rate -= 200
+                pygame.time.set_timer(SPAWN, barrier_spawn_rate)
 
 # Garbage Collector 
     destroy()
@@ -173,13 +175,13 @@ while RUNNING:
     for barrier in barriers:
         if not collision(barrier):
             player.health -= 1
-            player.rect.x += 100
-            if health.colour_1 == (255,7,131):
-                health.colour_1 = (0, 0, 0)
+            player.rect.x += 30
+            if health.colour_3 == (255,7,131):
+                health.colour_3 = (0, 0, 0)
             elif health.colour_2 == (255,7,131):
                 health.colour_2 = (0, 0, 0)
-            elif health.colour_3 == (255,7,131):
-                health.colour_2 = (0, 0, 0)
+            elif health.colour_1 == (255,7,131):
+                health.colour_1 = (0, 0, 0)
     for candy in candies:
         if not collision(candy):
             player.score += 1
@@ -241,10 +243,10 @@ while END:
 
 # Draw Screen
     SCREEN.fill(BACKGROUND_C)
-    end_text = font.render("THE END", True, SCORE_C)
-    SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/5, RESOLUTION[1]/2 - RESOLUTION[1]/6))
-    SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
+    end_text = font.render("High Score: " + str(player.score) , True, SCORE_C)
+    SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
 
     pygame.display.flip()
 
 # The End 
+
