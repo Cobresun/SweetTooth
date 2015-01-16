@@ -48,9 +48,10 @@ class Barrier(Object):
         barriers.append(self)
 
 class Candy(Object):
-    def __init__(self, width, height, x_cord, y_cord, colour):
+    def __init__(self, width, height, x_cord, y_cord, colour, score):
         Object.__init__(self, width, height, x_cord, y_cord, colour)
         candies.append(self)
+        self.score = score
 
 def spawn_barrier():
     if randint(0, 1) == 1:
@@ -85,9 +86,8 @@ def spawn_candy():
             if barrier.rect.x == x or barrier.rect.y == y:
                 continue
         break
-
-    Candy(RESOLUTION[0]/30, RESOLUTION[1]/30, x, y, CANDY_C)
-
+    rarity(Candy(RESOLUTION[0]/30, RESOLUTION[1]/30, x, y, CANDY_C_1, 1))
+  
 def destroy():
     for barrier in barriers:
         if barrier.rect.x < -360:
@@ -109,6 +109,18 @@ def collision(obj):
             return False
     return True
 
+def rarity(candy):
+    num = randint(1, 100)
+    if num > 50:
+        candy.score = 1
+        candy.colour = CANDY_C_1
+    elif 5 <= num <= 50:
+        candy.score = 2
+        candy.colour = CANDY_C_2
+    else:
+        candy.score = 5
+        candy.colour = CANDY_C_3
+
 def main():
     global RUNNING, MENU, END, barrier_spawn_rate
 
@@ -117,7 +129,6 @@ def main():
 
         # Sets Framerate
             CLOCK.tick(60)
-            print player.rect.y
         # Leave Game & Events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -153,7 +164,7 @@ def main():
                         health.colour_1 = (0, 0, 0)
             for candy in candies:
                 if not collision(candy):
-                    player.score += 1
+                    player.score += candy.score
 
         # Move Player
             key = pygame.key.get_pressed()
@@ -250,7 +261,9 @@ CLOCK = pygame.time.Clock()
 font = pygame.font.SysFont("none", 60)
 
 # Colours
-CANDY_C = (198,28,251)
+CANDY_C_1 = (102,244,255)
+CANDY_C_2 = (255,102,128)
+CANDY_C_3 = (247,151,31)
 PLAYER_C = (94,149,152)
 BARRIER_C = (141,122,126)
 HEARTS_C = (255,7,131)
