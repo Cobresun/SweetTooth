@@ -28,9 +28,10 @@ class Object(object):
             self.rect.x += -5
 
 class Player(Object):
-    def __init__(self, width, height, x_cord, y_cord, colour, health):
+    def __init__(self, width, height, x_cord, y_cord, colour, health, score):
         Object.__init__(self, width, height, x_cord, y_cord, colour)
         self.health = health
+        self.score = score
 
 class Health(object):
     def __init__(self):
@@ -80,6 +81,9 @@ def spawn_candy():
         for candy in candies:
             if candy.rect.x == x or candy.rect.y == y:
                 continue
+        for barrier in barriers:
+            if barrier.rect.x == x or barrier.rect.y == y:
+                continue
         break
 
     Candy(RESOLUTION[0]/30, RESOLUTION[1]/30, x, y, CANDY_C)
@@ -115,7 +119,7 @@ pygame.display.set_caption("Diabetes")
 RESOLUTION = (900, 840)
 SCREEN = pygame.display.set_mode(RESOLUTION)
 CLOCK = pygame.time.Clock()
-font = pygame.font.SysFont(None, 100)
+font = pygame.font.SysFont(None, 60)
 
 # Initialize Colours
 CANDY_C = (173,255,47)
@@ -123,9 +127,10 @@ PLAYER_C = (94,149,152)
 BARRIER_C = (141,122,126)
 HEARTS_C = (255,7,131)
 BACKGROUND_C = (255,248,245)
+SCORE_C = (254,127,30)
 
 # Initialize Player
-player = Player(RESOLUTION[0]/30, RESOLUTION[1]/30, RESOLUTION[0]/2.5, RESOLUTION[1]/2, PLAYER_C, 3)
+player = Player(RESOLUTION[0]/30, RESOLUTION[1]/30, RESOLUTION[0]/2.5, RESOLUTION[1]/2, PLAYER_C, 3, 0)
 health = Health()
 
 # Initialize Lists 
@@ -177,7 +182,7 @@ while RUNNING:
                 health.colour_2 = (0, 0, 0)
     for candy in candies:
         if not collision(candy):
-            print "hey!"
+            player.score += 1
 
 # Move Player
     key = pygame.key.get_pressed()
@@ -203,16 +208,18 @@ while RUNNING:
 
     pygame.draw.rect(SCREEN, player.colour, player.rect)
     
-    # Draw All Barriers
-    for barrier in barriers:
-        pygame.draw.rect(SCREEN, barrier.colour, barrier.rect)
-
     for candy in candies:
         pygame.draw.rect(SCREEN, candy.colour, candy.rect)
+
+    for barrier in barriers:
+        pygame.draw.rect(SCREEN, barrier.colour, barrier.rect)
 
     pygame.draw.rect(SCREEN, health.colour_1, health.rect_1)
     pygame.draw.rect(SCREEN, health.colour_2, health.rect_2)
     pygame.draw.rect(SCREEN, health.colour_3, health.rect_3)
+
+    score = font.render("Candies: " + str(player.score), True, SCORE_C)
+    SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
 
     pygame.display.flip()
 
@@ -234,8 +241,9 @@ while END:
 
 # Draw Screen
     SCREEN.fill(BACKGROUND_C)
-    end_text = font.render("THE END", True, (0, 128, 0))
+    end_text = font.render("THE END", True, SCORE_C)
     SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/5, RESOLUTION[1]/2 - RESOLUTION[1]/6))
+    SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
 
     pygame.display.flip()
 
