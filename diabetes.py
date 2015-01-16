@@ -125,6 +125,10 @@ SPAWN = pygame.USEREVENT
 barrier_spawn_rate = 1000
 pygame.time.set_timer(SPAWN, barrier_spawn_rate)
 
+MINUTE = pygame.USEREVENT+1
+pygame.time.set_timer(MINUTE, 1000*10)
+
+
 RUNNING = True
 
 while RUNNING:
@@ -132,7 +136,7 @@ while RUNNING:
 # Sets Framerate
     CLOCK.tick(60)
 
-# Leave Game
+# Leave Game & Events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
@@ -140,6 +144,10 @@ while RUNNING:
             RUNNING = False
         elif event.type == SPAWN:
             spawn_barrier()
+        elif event.type == MINUTE:
+            barrier_spawn_rate -= 200
+            pygame.time.set_timer(SPAWN, barrier_spawn_rate)
+
 
 # Garbage Collector 
     destroy()
