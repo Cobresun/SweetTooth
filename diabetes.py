@@ -52,15 +52,26 @@ class Candy(Object):
         candies.append(self)
 
 def spawn_barrier():
-    while True:
-        x = RESOLUTION[0] + 1
-        y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, 30)
-        for barrier in barriers:
-            if barrier.rect.x == x or barrier.rect.y == y:
-                continue
-        break
+    if randint(0, 1) == 1:
+        while True:
+            x = RESOLUTION[0] + 1
+            y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, 30)
+            for barrier in barriers:
+                if barrier.rect.x == x or barrier.rect.y == y:
+                    continue
+            break
 
-    Barrier(RESOLUTION[0]/15, RESOLUTION[1]/3, x, y, BARRIER_C)
+        Barrier(RESOLUTION[0]/15, RESOLUTION[1]/3, x, y, BARRIER_C)
+    else:
+        while True:
+            x = RESOLUTION[0] + 1
+            y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, 30)
+            for barrier in barriers:
+                if barrier.rect.x == x or barrier.rect.y == y:
+                    continue
+            break
+
+        Barrier(RESOLUTION[0]/3, RESOLUTION[1]/15, x, y, BARRIER_C)
 
 def destroy():
     for barrier in barriers:
@@ -100,7 +111,7 @@ HEARTS_C = (255,7,131)
 BACKGROUND_C = (255,248,245)
 
 # Initialize Player
-player = Player(RESOLUTION[0]/30, RESOLUTION[1]/15, RESOLUTION[0]/2.5, RESOLUTION[1]/2, PLAYER_C, 3)
+player = Player(RESOLUTION[0]/30, RESOLUTION[1]/30, RESOLUTION[0]/2.5, RESOLUTION[1]/2, PLAYER_C, 3)
 health = Health()
 
 # Initialize Barrier Stuffs
@@ -196,7 +207,7 @@ while END:
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             END = False
         elif event.type == SPAWN:
-            spawn()    
+            spawn_barrier()    
 
 # Draw Screen
     SCREEN.fill(BACKGROUND_C)
