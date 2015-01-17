@@ -8,6 +8,8 @@ height = input("Enter Height: ")
 RESOLUTION = (width, height)
 """
 
+RESOLUTION = (900, 840)
+
 class Object(object):
     def __init__(self, width, height, x_cord, y_cord, colour):
         self.x_cord = x_cord
@@ -122,8 +124,34 @@ def rarity(candy):
         candy.colour = CANDY_C_3
 
 def main():
-    global RUNNING, MENU, END, barrier_spawn_rate
+    global RUNNING, MENU, END, INTRO, barrier_spawn_rate
 
+    if INTRO:
+        while INTRO:
+            # Sets Framerate
+            CLOCK.tick(60)
+
+            # Leave Game
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    RUNNING = False
+                    END = False
+                    MENU = False
+                    INTRO = False
+                elif event.type == pygame.KEYDOWN:
+                    MENU = False
+                    RUNNING = True
+                    END = False
+                    INTRO = False
+            # Draw Screen
+            SCREEN.fill(BACKGROUND_C)
+            end_text = font.render("Get Candy!", True, SCORE_C)
+            end_text_2 = font.render("Hit Any Key To Start", True, SCORE_C)
+            
+            SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
+            SCREEN.blit(end_text_2, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/4 - RESOLUTION[1]/6))
+
+            pygame.display.flip()
     if RUNNING:
         while RUNNING:
 
@@ -243,7 +271,7 @@ def main():
 
         # Draw Screen
             SCREEN.fill(BACKGROUND_C)
-            end_text = font.render("MENU " + str(player.score) , True, SCORE_C)
+            end_text = font.render("MENU ", True, SCORE_C)
             SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
 
             pygame.display.flip()
@@ -255,7 +283,6 @@ pygame.init()
 # Set Up Display
 pygame.display.set_caption("Diabetes")
 # Resolution for testing Only
-RESOLUTION = (900, 840)
 SCREEN = pygame.display.set_mode(RESOLUTION)
 CLOCK = pygame.time.Clock()
 font = pygame.font.SysFont("none", 60)
@@ -286,13 +313,14 @@ pygame.time.set_timer(SPAWN, barrier_spawn_rate)
 MINUTE = pygame.USEREVENT+1
 pygame.time.set_timer(MINUTE, 1000*10)
 
-RUNNING = True
+RUNNING = False
 END = False
 MENU = False
+INTRO = True
 
 while True:
     main()
-    if RUNNING or END or MENU:
+    if RUNNING or END or MENU or INTRO:
         continue
     else:
         break
