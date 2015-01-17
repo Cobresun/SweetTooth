@@ -59,7 +59,7 @@ def spawn_barrier():
     if randint(0, 1) == 1:
         while True:
             x = RESOLUTION[0] + 1
-            y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, 30)
+            y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, RESOLUTION[1]/30)
             for barrier in barriers:
                 if barrier.rect.x == x or barrier.rect.y == y:
                     continue
@@ -69,7 +69,7 @@ def spawn_barrier():
     else:
         while True:
             x = RESOLUTION[0] + 1
-            y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, 30)
+            y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, RESOLUTION[1]/30)
             for barrier in barriers:
                 if barrier.rect.x == x or barrier.rect.y == y:
                     continue
@@ -113,10 +113,10 @@ def collision(obj):
 
 def rarity(candy):
     num = randint(1, 100)
-    if num > 50:
+    if num > 30:
         candy.score = 1
         candy.colour = CANDY_C_1
-    elif 5 <= num <= 50:
+    elif 5 <= num <= 30:
         candy.score = 2
         candy.colour = CANDY_C_2
     else:
@@ -168,7 +168,7 @@ def main():
                     RUNNING = False
                     
                 elif event.type == SPAWN:
-                    if len(barriers) < 8:
+                    if len(barriers) < 10:
                         spawn_barrier()
                     spawn_candy()
                 elif event.type == MINUTE:
@@ -213,6 +213,8 @@ def main():
             if player.health < 1:
                 RUNNING = False
                 END = True
+                pygame.mixer.music.load('death.aif')
+                pygame.mixer.music.play()
 
         # Drawing The Screen
             SCREEN.fill(BACKGROUND_C)
@@ -298,7 +300,8 @@ BACKGROUND_C = (255,248,245)
 SCORE_C = (254,127,30)
 
 # Initialize Player
-player = Player(RESOLUTION[0]/30, RESOLUTION[1]/30, RESOLUTION[0]/2.5, RESOLUTION[1]/2, PLAYER_C, 3, 0)
+player = Player(RESOLUTION[0]/30, RESOLUTION[1]/30, 
+    RESOLUTION[0]/2.5, RESOLUTION[1]/2, PLAYER_C, 3, 0)
 health = Health()
 
 # Initialize Lists 
