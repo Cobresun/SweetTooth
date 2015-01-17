@@ -10,6 +10,23 @@ RESOLUTION = (width, height)
 
 RESOLUTION = (900, 840)
 
+def high_score_func():
+    try:
+        high_score = pickle.load( open('highscore.p', 'rb'))
+        print high_score
+        if player.score > high_score:
+            high_score = player.score
+            pickle.dump(high_score, open('highscore.p', 'wb'))
+    except EOFError:
+        high_score = player.score
+        pickle.dump(high_score, open('highscore.p', 'wb'))
+        print "yolo"
+    if high_score > player.score:
+            return high_score
+    else:
+        high_score = player.score
+        return high_score
+
 class Object(object):
     def __init__(self, width, height, x_cord, y_cord, colour):
         self.x_cord = x_cord
@@ -91,6 +108,7 @@ def spawn_candy():
     rarity(Candy(RESOLUTION[0]/30, RESOLUTION[1]/30, x, y, CANDY_C_1, 1))
   
 def destroy():
+    global candies
     for barrier in barriers:
         if barrier.rect.x < -360:
             barriers.remove(barrier)
@@ -124,7 +142,7 @@ def rarity(candy):
         candy.colour = CANDY_C_3
 
 def main():
-    global RUNNING, MENU, END, INTRO, barrier_spawn_rate
+    global RUNNING, MENU, END, INTRO, barrier_spawn_rate, high_score, barriers, candies, health
 
     if INTRO:
         while INTRO:
@@ -164,8 +182,8 @@ def main():
                     END = False
                     MENU = False
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    MENU = True
                     RUNNING = False
+                    MENU = True
                     
                 elif event.type == SPAWN:
                     if len(barriers) < 10:
@@ -249,12 +267,23 @@ def main():
                     MENU = False
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     END = False  
+                elif event.type == pygame.KEYDOWN:
+                    END = False
+                    RUNNING = True
+                    player.health = 3
+                    barrier_spawn_rate = 1000
+                    health = Health()
+                    barriers = []
+                    candies = [] 
+                    player.rect.x -=90
+                    player.score = 0
 
         # Draw Screen
             SCREEN.fill(BACKGROUND_C)
-            end_text = font.render("High Score: " + str(player.score) , True, SCORE_C)
+            end_text = font.render("High Score: " + str(high_score_func()) , True, SCORE_C)
+            score = font.render("Candies: " + str(player.score), True, SCORE_C)
             SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
-
+            SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
             pygame.display.flip()
     if MENU:
         while MENU:
@@ -279,12 +308,11 @@ def main():
             pygame.display.flip()
 
 # Initialize Pygame
-os.environ["SDL_VIDEO_CENTERED"] = "1"
+os.environ["SDL_VIDEO_CENTERED"] =  "1"
 pygame.init()
 
 # Set Up Display
-pygame.display.set_caption("Diabetes")
-# Resolution for testing Only
+pygame.display.set_caption("Sweet Tooth")
 SCREEN = pygame.display.set_mode(RESOLUTION)
 CLOCK = pygame.time.Clock()
 font = pygame.font.SysFont("none", 60)
@@ -302,7 +330,7 @@ SCORE_C = (254,127,30)
 # Initialize Player
 player = Player(RESOLUTION[0]/30, RESOLUTION[1]/30, 
     RESOLUTION[0]/2.5, RESOLUTION[1]/2, PLAYER_C, 3, 0)
-health = Health()
+high_score = 0
 
 # Initialize Lists 
 barriers = []
@@ -320,6 +348,8 @@ RUNNING = False
 END = False
 MENU = False
 INTRO = True
+high_score_func()
+health = Health()
 
 while True:
     main()
