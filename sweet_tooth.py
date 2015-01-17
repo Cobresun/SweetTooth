@@ -1,5 +1,7 @@
-import pygame, os, pickle
-from random import randint, randrange
+import pygame
+import os 
+import random
+import pickle
 
 # For Release Version Only
 """
@@ -9,23 +11,6 @@ RESOLUTION = (width, height)
 """
 
 RESOLUTION = (900, 840)
-
-def high_score_func():
-    try:
-        high_score = pickle.load( open('highscore.p', 'rb'))
-        print high_score
-        if player.score > high_score:
-            high_score = player.score
-            pickle.dump(high_score, open('highscore.p', 'wb'))
-    except EOFError:
-        high_score = player.score
-        pickle.dump(high_score, open('highscore.p', 'wb'))
-        print "yolo"
-    if high_score > player.score:
-            return high_score
-    else:
-        high_score = player.score
-        return high_score
 
 class Object(object):
     def __init__(self, width, height, x_cord, y_cord, colour):
@@ -72,11 +57,26 @@ class Candy(Object):
         candies.append(self)
         self.score = score
 
+def high_score_func():
+    try:
+        high_score = pickle.load( open('highscore.p', 'rb'))
+        if player.score > high_score:
+            high_score = player.score
+            pickle.dump(high_score, open('highscore.p', 'wb'))
+    except EOFError:
+        high_score = player.score
+        pickle.dump(high_score, open('highscore.p', 'wb'))
+    if high_score > player.score:
+            return high_score
+    else:
+        high_score = player.score
+        return high_score
+
 def spawn_barrier():
-    if randint(0, 1) == 1:
+    if random.randint(0, 1) == 1:
         while True:
             x = RESOLUTION[0] + 1
-            y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, RESOLUTION[1]/30)
+            y = random.randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, RESOLUTION[1]/30)
             for barrier in barriers:
                 if barrier.rect.x == x or barrier.rect.y == y:
                     continue
@@ -86,7 +86,7 @@ def spawn_barrier():
     else:
         while True:
             x = RESOLUTION[0] + 1
-            y = randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, RESOLUTION[1]/30)
+            y = random.randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, RESOLUTION[1]/30)
             for barrier in barriers:
                 if barrier.rect.x == x or barrier.rect.y == y:
                     continue
@@ -97,7 +97,7 @@ def spawn_barrier():
 def spawn_candy():
     while True:
         x = RESOLUTION[0] + 1
-        y = randrange(0, RESOLUTION[1])
+        y = random.randrange(0, RESOLUTION[1])
         for candy in candies:
             if candy.rect.x == x or candy.rect.y == y:
                 continue
@@ -130,7 +130,7 @@ def collision(obj):
     return True
 
 def rarity(candy):
-    num = randint(1, 100)
+    num = random.randint(1, 100)
     if num > 30:
         candy.score = 1
         candy.colour = CANDY_C_1
@@ -357,3 +357,6 @@ while True:
         continue
     else:
         break
+
+if __name__ == '__main__':
+    main()
