@@ -9,7 +9,7 @@ width = input("Enter Width: ")
 height = input("Enter Height: ")
 RESOLUTION = (width, height)
 """
-
+# Hi Sunny
 RESOLUTION = (900, 840)
 
 class Object(object):
