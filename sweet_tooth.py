@@ -196,7 +196,7 @@ def main():
 
         # Garbage Collector 
             destroy()
-
+        
         # Collision
             for barrier in barriers:
                 if not collision(barrier):
@@ -211,7 +211,6 @@ def main():
             for candy in candies:
                 if not collision(candy):
                     player.score += candy.score
-
         # Move Player
             key = pygame.key.get_pressed()
             if key[pygame.K_w]:
@@ -277,13 +276,17 @@ def main():
                     candies = [] 
                     player.rect.x -=90
                     player.score = 0
+                    barrier_spawn_rate = 1000
+                    pygame.time.set_timer(SPAWN, barrier_spawn_rate)
 
         # Draw Screen
             SCREEN.fill(BACKGROUND_C)
             end_text = font.render("High Score: " + str(high_score_func()) , True, SCORE_C)
             score = font.render("Candies: " + str(player.score), True, SCORE_C)
+            instruction = font.render("Press any key to continue.", True, SCORE_C)
             SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
             SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
+            SCREEN.blit(instruction, (RESOLUTION[0]-700 , 500))
             pygame.display.flip()
     if MENU:
         while MENU:
