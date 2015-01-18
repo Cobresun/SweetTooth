@@ -4,11 +4,11 @@ import random
 import pickle
 
 # For Release Version Only
-"""
+
 width = input("Enter Width: ")
 height = input("Enter Height: ")
 RESOLUTION = (width, height)
-"""
+
 
 RESOLUTION = (900, 840)
 
@@ -163,8 +163,8 @@ def main():
                     INTRO = False
             # Draw Screen
             SCREEN.fill(BACKGROUND_C)
-            end_text = font.render("Get Candy!", True, SCORE_C)
-            end_text_2 = font.render("Hit Any Key To Start", True, SCORE_C)
+            end_text = font.render("Get Candy!", True, TITLE_C)
+            end_text_2 = font.render("Hit Any Key To Start", True, TITLE_C)
             
             SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
             SCREEN.blit(end_text_2, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/4 - RESOLUTION[1]/6))
@@ -203,11 +203,11 @@ def main():
                     player.health -= 1
                     player.rect.x += 30
                     if health.colour_3 == (255,7,131):
-                        health.colour_3 = (0, 0, 0)
+                        health.colour_3 = BLACK_C
                     elif health.colour_2 == (255,7,131):
-                        health.colour_2 = (0, 0, 0)
+                        health.colour_2 = BLACK_C
                     elif health.colour_1 == (255,7,131):
-                        health.colour_1 = (0, 0, 0)
+                        health.colour_1 = BLACK_C
             for candy in candies:
                 if not collision(candy):
                     player.score += candy.score
@@ -248,7 +248,7 @@ def main():
             pygame.draw.rect(SCREEN, health.colour_2, health.rect_2)
             pygame.draw.rect(SCREEN, health.colour_3, health.rect_3)
 
-            score = font.render("Candies: " + str(player.score), True, SCORE_C)
+            score = font.render("Candies: " + str(player.score), True, TITLE_C)
             SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
 
             pygame.display.flip()
@@ -265,7 +265,9 @@ def main():
                     END = False
                     MENU = False
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    END = False  
+                    RUNNING = False
+                    END = False
+                    MENU = False  
                 elif event.type == pygame.KEYDOWN:
                     END = False
                     RUNNING = True
@@ -281,9 +283,9 @@ def main():
 
         # Draw Screen
             SCREEN.fill(BACKGROUND_C)
-            end_text = font.render("High Score: " + str(high_score_func()) , True, SCORE_C)
-            score = font.render("Candies: " + str(player.score), True, SCORE_C)
-            instruction = font.render("Press any key to continue.", True, SCORE_C)
+            end_text = font.render("High Score: " + str(high_score_func()) , True, TITLE_C)
+            score = font.render("Candies: " + str(player.score), True, TITLE_C)
+            instruction = font.render("Press any key to continue.", True, TITLE_C)
             SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
             SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
             SCREEN.blit(instruction, (RESOLUTION[0]-700 , 500))
@@ -305,7 +307,7 @@ def main():
 
         # Draw Screen
             SCREEN.fill(BACKGROUND_C)
-            end_text = font.render("MENU ", True, SCORE_C)
+            end_text = font.render("MENU ", True, TITLE_C)
             SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
 
             pygame.display.flip()
@@ -324,11 +326,12 @@ font = pygame.font.SysFont("none", 60)
 CANDY_C_1 = (102,244,255)
 CANDY_C_2 = (255,102,128)
 CANDY_C_3 = (247,151,31)
+BLACK_C = (0, 0, 0)
 PLAYER_C = (94,149,152)
 BARRIER_C = (141,122,126)
 HEARTS_C = (255,7,131)
 BACKGROUND_C = (255,248,245)
-SCORE_C = (254,127,30)
+TITLE_C = (254,127,30)
 
 # Initialize Player
 player = Player(RESOLUTION[0]/30, RESOLUTION[1]/30, 
