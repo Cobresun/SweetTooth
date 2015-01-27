@@ -1,19 +1,15 @@
 import pygame
-import os 
+import os
 import random
 import pickle
 
 # For Release Version Only
 """
 width = input("Enter Width: ")
-height = input("Enter Height: ")
+height = ingput("Enter Height: ")
 RESOLUTION = (width, height)
 """
 
-
-
-
-# Hi Sunny
 RESOLUTION = (900, 840)
 
 class Object(object):
@@ -146,7 +142,7 @@ def rarity(candy):
         candy.colour = CANDY_C_3
 
 def main():
-    global RUNNING, MENU, END, INTRO, barrier_spawn_rate, high_score, barriers, candies, health
+    global RUNNING, MENU, END, INTRO, MUTE, barrier_spawn_rate, high_score, barriers, candies, health
 
     if INTRO:
         while INTRO:
@@ -215,6 +211,9 @@ def main():
             for candy in candies:
                 if not collision(candy):
                     player.score += candy.score
+                    if MUTE == False:
+                        pygame.mixer.music.load('candy.aif')
+                        pygame.mixer.music.play()
         # Move Player
             key = pygame.key.get_pressed()
             if key[pygame.K_w]:
@@ -234,8 +233,9 @@ def main():
             if player.health < 1:
                 RUNNING = False
                 END = True
-                pygame.mixer.music.load('death.aif')
-                pygame.mixer.music.play()
+                if MUTE == False:
+                    pygame.mixer.music.load('death.aif')
+                    pygame.mixer.music.play()
 
         # Drawing The Screen
             SCREEN.fill(BACKGROUND_C)
@@ -308,11 +308,22 @@ def main():
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     MENU = False
                     RUNNING = True
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                    MUTE = not MUTE
+
+        # Sets Mute State
+            if MUTE == True:
+                mute_state = "unmute"
+            else:
+                mute_state = "mute"
 
         # Draw Screen
             SCREEN.fill(BACKGROUND_C)
             end_text = font.render("MENU ", True, TITLE_C)
             SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
+
+            mute_text = font.render("Press 'm' to {}".format(mute_state), True, TITLE_C)
+            SCREEN.blit(mute_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 100))
 
             pygame.display.flip()
 
@@ -338,9 +349,9 @@ BACKGROUND_C = (255,248,245)
 TITLE_C = (254,127,30)
 
 # Initialize Player
+high_score = 0
 player = Player(RESOLUTION[0]/30, RESOLUTION[1]/30, 
     RESOLUTION[0]/2.5, RESOLUTION[1]/2, PLAYER_C, 3, 0)
-high_score = 0
 
 # Initialize Lists 
 barriers = []
@@ -358,6 +369,7 @@ RUNNING = False
 END = False
 MENU = False
 INTRO = True
+MUTE = False
 high_score_func()
 health = Health()
 
