@@ -184,7 +184,6 @@ def main():
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     RUNNING = False
                     MENU = True
-                    
                 elif event.type == SPAWN:
                     if len(barriers) < 10:
                         spawn_barrier()
@@ -193,6 +192,8 @@ def main():
                     if not barrier_spawn_rate == 200:
                         barrier_spawn_rate -= 200
                         pygame.time.set_timer(SPAWN, barrier_spawn_rate)
+                elif event.type == SECONDS:
+                    player.colour = PLAYER_C
 
         # Garbage Collector 
             destroy()
@@ -200,6 +201,12 @@ def main():
         # Collision
             for barrier in barriers:
                 if not collision(barrier):
+                    player.colour = PLAYER_HURT_C
+                    pygame.time.set_timer(SECONDS, 1000*2)
+
+                    if MUTE == False:
+                        pygame.mixer.music.load('barrier.aif')
+                        pygame.mixer.music.play()
                     player.health -= 1
                     player.rect.x += 30
                     if health.colour_3 == (255,7,131):
@@ -343,6 +350,7 @@ CANDY_C_2 = (255,102,128)
 CANDY_C_3 = (247,151,31)
 BLACK_C = (0, 0, 0)
 PLAYER_C = (94,149,152)
+PLAYER_HURT_C = (255, 0, 0)
 BARRIER_C = (141,122,126)
 HEARTS_C = (255,7,131)
 BACKGROUND_C = (255,248,245)
@@ -364,6 +372,9 @@ pygame.time.set_timer(SPAWN, barrier_spawn_rate)
 
 MINUTE = pygame.USEREVENT+1
 pygame.time.set_timer(MINUTE, 1000*10)
+
+SECONDS = pygame.USEREVENT+2
+pygame.time.set_timer(SECONDS, 1000*2)
 
 RUNNING = False
 END = False
