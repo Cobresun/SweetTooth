@@ -20,6 +20,7 @@ class Object(object):
         self.colour = colour
 
     def move(self, direction):
+        global dif_state
         if self.rect.y <= 2:
             self.rect.y += RESOLUTION[1]-player.rect.height-10
         elif self.rect.y >= RESOLUTION[1]-player.rect.height:
@@ -29,7 +30,12 @@ class Object(object):
         elif direction == "down":
             self.rect.y += 8
         elif direction == "left":
-            self.rect.x += -5
+            if dif_state == "easy":
+                self.rect.x += -5
+            elif dif_state == "medium":
+                self.rect.x += -8
+            elif dif_state == "hard":
+                self.rect.x += -11
 
 class Player(Object):
     def __init__(self, width, height, x_cord, y_cord, colour, health, score):
@@ -118,7 +124,7 @@ def destroy():
             candies.remove(candy)
             del candy
 
-def collision(obj):
+def collision(obj, player):
     if obj.rect.x <= player.rect.x <= obj.rect.x+obj.rect.width or obj.rect.x <= player.rect.x+player.rect.width <= obj.rect.x+obj.rect.width:
         if obj.rect.y <= player.rect.y <= obj.rect.y+obj.rect.height or obj.rect.y <= player.rect.y+player.rect.height <= obj.rect.y+obj.rect.height:
             if type(obj).__name__ == 'Barrier':
@@ -142,7 +148,7 @@ def rarity(candy):
         candy.colour = CANDY_C_3
 
 def main():
-    global RUNNING, MENU, END, INTRO, MUTE, barrier_spawn_rate, high_score, barriers, candies, health
+    global RUNNING, MENU, END, INTRO, MUTE, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
 
     if INTRO:
         while INTRO:
@@ -170,11 +176,13 @@ def main():
             SCREEN.blit(end_text_2, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/4 - RESOLUTION[1]/6))
 
             pygame.display.flip()
+    
     if RUNNING:
         while RUNNING:
 
         # Sets Framerate
             CLOCK.tick(60)
+
         # Leave Game & Events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -200,7 +208,7 @@ def main():
         
         # Collision
             for barrier in barriers:
-                if not collision(barrier):
+                if not collision(barrier, player):
                     player.colour = PLAYER_HURT_C
                     pygame.time.set_timer(SECONDS, 1000*2)
 
@@ -215,9 +223,16 @@ def main():
                         health.colour_2 = BLACK_C
                     elif health.colour_1 == (255,7,131):
                         health.colour_1 = BLACK_C
+            
             for candy in candies:
-                if not collision(candy):
-                    player.score += candy.score
+                if not collision(candy, player):
+                    if dif_state == "easy":
+                        player.score += candy.score
+                    elif dif_state == "medium":
+                        player.score += candy.score * 2
+                    elif dif_state == "hard":
+                        player.score += candy.score * 3
+
                     if MUTE == False:
                         pygame.mixer.music.load('candy.aif')
                         pygame.mixer.music.play()
@@ -243,6 +258,7 @@ def main():
                 if MUTE == False:
                     pygame.mixer.music.load('death.aif')
                     pygame.mixer.music.play()
+                player.colour = PLAYER_C
 
         # Drawing The Screen
             SCREEN.fill(BACKGROUND_C)
@@ -297,9 +313,11 @@ def main():
             end_text = font.render("High Score: " + str(high_score_func()) , True, TITLE_C)
             score = font.render("Candies: " + str(player.score), True, TITLE_C)
             instruction = font.render("Press any key to continue.", True, TITLE_C)
+            instruction_2 = font.render("Press escape to quit.", True, TITLE_C)
             SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
             SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
             SCREEN.blit(instruction, (RESOLUTION[0]-700 , 500))
+            SCREEN.blit(instruction_2, (RESOLUTION[0]-700 , 600))
             pygame.display.flip()
     if MENU:
         while MENU:
@@ -317,6 +335,13 @@ def main():
                     RUNNING = True
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_m:
                     MUTE = not MUTE
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+                    if dif_state == "easy":
+                        dif_state = "medium"
+                    elif dif_state == "medium":
+                        dif_state = "hard"
+                    elif dif_state == "hard":
+                        dif_state = "easy"
 
         # Sets Mute State
             if MUTE == True:
@@ -332,6 +357,9 @@ def main():
             mute_text = font.render("Press 'm' to {}".format(mute_state), True, TITLE_C)
             SCREEN.blit(mute_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 100))
 
+            dif_text = font.render("Press 'd' to enter {} mode".format(dif_state), True, TITLE_C)
+            SCREEN.blit(dif_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 200))
+
             pygame.display.flip()
 
 # Initialize Pygame
@@ -342,7 +370,7 @@ pygame.init()
 pygame.display.set_caption("Sweet Tooth")
 SCREEN = pygame.display.set_mode(RESOLUTION)
 CLOCK = pygame.time.Clock()
-font = pygame.font.SysFont("none", 60)
+font = pygame.font.SysFont("none", 50)
 
 # Colours
 CANDY_C_1 = (102,244,255)
@@ -381,6 +409,7 @@ END = False
 MENU = False
 INTRO = True
 MUTE = False
+dif_state = "easy"
 high_score_func()
 health = Health()
 
