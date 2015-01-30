@@ -1,3 +1,3 @@
 # Sweet-Tooth
 
-For now, this kinda just says swagger.
+A fun little arcade style minimalist game made in Pygame.
