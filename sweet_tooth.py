@@ -114,25 +114,38 @@ def spawn_candy():
     rarity(Candy(RESOLUTION[0]/30, RESOLUTION[1]/30, x, y, CANDY_C_1, 1))
   
 def destroy():
-    global candies
+    global candies, barriers
     for barrier in barriers:
         if barrier.rect.x < -360:
             barriers.remove(barrier)
             del barrier
     for candy in candies:
+        for barrier in barriers:
+            if not collision(barrier, candy):
+                candies.remove(candy)
+                del candy
+                return 
         if candy.rect.x < -360:
             candies.remove(candy)
             del candy
 
-def collision(obj, player):
-    if obj.rect.x <= player.rect.x <= obj.rect.x+obj.rect.width or obj.rect.x <= player.rect.x+player.rect.width <= obj.rect.x+obj.rect.width:
-        if obj.rect.y <= player.rect.y <= obj.rect.y+obj.rect.height or obj.rect.y <= player.rect.y+player.rect.height <= obj.rect.y+obj.rect.height:
-            if type(obj).__name__ == 'Barrier':
-                barriers.remove(obj)
-            if type(obj).__name__ == 'Candy':
-                candies.remove(obj)
-            del obj
-            return False
+def collision(obj, obj2):
+    global candies, barriers
+    if obj.rect.x <= obj2.rect.x <= obj.rect.x+obj.rect.width or obj.rect.x <= obj2.rect.x+obj2.rect.width <= obj.rect.x+obj.rect.width:
+        if obj.rect.y <= obj2.rect.y <= obj.rect.y+obj.rect.height or obj.rect.y <= obj2.rect.y+obj2.rect.height <= obj.rect.y+obj.rect.height:
+            if type(obj2).__name__ == "Player":
+                if type(obj).__name__ == 'Barrier':
+                    barriers.remove(obj)
+                    del obj
+                elif type(obj).__name__ == 'Candy':
+                    candies.remove(obj)
+                    del obj
+                return False
+            elif type(obj2).__name__ == "Candy":
+                return False
+            else:
+                del obj2
+                print "yolo"
     return True
 
 def rarity(candy):
@@ -211,7 +224,6 @@ def main():
                 if not collision(barrier, player):
                     player.colour = PLAYER_HURT_C
                     pygame.time.set_timer(SECONDS, 1000*2)
-
                     if MUTE == False:
                         pygame.mixer.music.load('barrier.aif')
                         pygame.mixer.music.play()
@@ -279,6 +291,7 @@ def main():
             SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
 
             pygame.display.flip()
+    
     if END:
         while END:
 
@@ -307,6 +320,7 @@ def main():
                     player.score = 0
                     barrier_spawn_rate = 1000
                     pygame.time.set_timer(SPAWN, barrier_spawn_rate)
+                    dif_state = "easy"
 
         # Draw Screen
             SCREEN.fill(BACKGROUND_C)
@@ -319,6 +333,7 @@ def main():
             SCREEN.blit(instruction, (RESOLUTION[0]-700 , 500))
             SCREEN.blit(instruction_2, (RESOLUTION[0]-700 , 600))
             pygame.display.flip()
+    
     if MENU:
         while MENU:
         # Sets Framerate
@@ -352,13 +367,13 @@ def main():
         # Draw Screen
             SCREEN.fill(BACKGROUND_C)
             end_text = font.render("MENU ", True, TITLE_C)
-            SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
+            SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/2.3, RESOLUTION[1]/2 - RESOLUTION[1]/6))
 
             mute_text = font.render("Press 'm' to {}".format(mute_state), True, TITLE_C)
-            SCREEN.blit(mute_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 100))
+            SCREEN.blit(mute_text, (RESOLUTION[0]/2 - RESOLUTION[0]/2.3, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 100))
 
-            dif_text = font.render("Press 'd' to enter {} mode".format(dif_state), True, TITLE_C)
-            SCREEN.blit(dif_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 200))
+            dif_text = font.render("Press 'd' to change mode. Current Mode: {}".format(dif_state), True, TITLE_C)
+            SCREEN.blit(dif_text, (RESOLUTION[0]/2 - RESOLUTION[0]/2.3, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 200))
 
             pygame.display.flip()
 
