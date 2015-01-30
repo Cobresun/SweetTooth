@@ -1,9 +1,10 @@
+# Made By Sokasuki
+
 import pygame
 import os
 import random
 import pickle
 
-# For Release Version Only
 """
 width = input("Enter Width: ")
 height = ingput("Enter Height: ")
