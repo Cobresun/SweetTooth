@@ -281,11 +281,9 @@ def running():
 
     # Drawing The Screen
     SCREEN.fill(BACKGROUND_C)
-
-    pygame.draw.rect(SCREEN, player.colour, player.rect)
     
     for candy in candies:
-        pygame.draw.rect(SCREEN, candy.colour, candy.rect)
+        pygame.draw.circle(SCREEN, candy.colour, (candy.rect.x, candy.rect.y), candy.rect.width/2, candy.rect.width/2)
 
     for barrier in barriers:
         pygame.draw.rect(SCREEN, barrier.colour, barrier.rect)
@@ -296,6 +294,8 @@ def running():
 
     score = font.render("Candies: " + str(player.score), True, TITLE_C)
     SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
+
+    pygame.draw.rect(SCREEN, player.colour, player.rect)
 
     pygame.display.flip()
 
