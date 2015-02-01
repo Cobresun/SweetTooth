@@ -5,13 +5,13 @@ import os
 import random
 import pickle
 
-"""
+
 width = input("Enter Width: ")
 height = ingput("Enter Height: ")
 RESOLUTION = (width, height)
-"""
 
-RESOLUTION = (900, 840)
+
+#RESOLUTION = (900, 840)
 
 class Object(object):
     def __init__(self, width, height, x_cord, y_cord, colour):
