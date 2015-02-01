@@ -151,15 +151,18 @@ def collision(obj, obj2):
 
 def rarity(candy):
     num = random.randint(1, 100)
-    if num > 30:
+    if 30 <= num <= 100:
         candy.score = 1
         candy.colour = CANDY_C_1
     elif 5 <= num <= 30:
         candy.score = 2
         candy.colour = CANDY_C_2
-    else:
+    elif 2 <= num <= 5:
         candy.score = 5
         candy.colour = CANDY_C_3
+    else:
+        candy.score = 20
+        candy.colour = CHEESE
 
 # Define Function For Each Screen
 def intro():
@@ -283,8 +286,10 @@ def running():
     SCREEN.fill(BACKGROUND_C)
     
     for candy in candies:
-        pygame.draw.circle(SCREEN, candy.colour, (candy.rect.x, candy.rect.y), candy.rect.width/2, candy.rect.width/2)
-
+        if candy.colour != CHEESE:
+            pygame.draw.circle(SCREEN, candy.colour, (candy.rect.x, candy.rect.y), candy.rect.width/2, candy.rect.width/2)
+        else:
+            pygame.draw.rect(SCREEN, candy.colour, candy.rect)
     for barrier in barriers:
         pygame.draw.rect(SCREEN, barrier.colour, barrier.rect)
 
@@ -411,6 +416,7 @@ font = pygame.font.SysFont("none", 50)
 CANDY_C_1 = (102,244,255)
 CANDY_C_2 = (255,102,128)
 CANDY_C_3 = (247,151,31)
+CHEESE = (245, 236, 183)
 BLACK_C = (0, 0, 0)
 PLAYER_C = (94,149,152)
 PLAYER_HURT_C = (255, 0, 0)
