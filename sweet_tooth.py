@@ -5,13 +5,7 @@ import os
 import random
 import pickle
 
-
-width = input("Enter Width: ")
-height = ingput("Enter Height: ")
-RESOLUTION = (width, height)
-
-
-#RESOLUTION = (900, 840)
+RESOLUTION = (880, 640)
 
 class Object(object):
     def __init__(self, width, height, x_cord, y_cord, colour):
@@ -342,8 +336,8 @@ def end():
     instruction_2 = font.render("Press escape to quit.", True, TITLE_C)
     SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
     SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
-    SCREEN.blit(instruction, (RESOLUTION[0]-700 , 500))
-    SCREEN.blit(instruction_2, (RESOLUTION[0]-700 , 600))
+    SCREEN.blit(instruction, (RESOLUTION[0]-700 , 400))
+    SCREEN.blit(instruction_2, (RESOLUTION[0]-700 , 500))
     pygame.display.flip()
 
 def menu():
