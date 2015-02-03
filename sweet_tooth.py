@@ -160,7 +160,7 @@ def rarity(candy):
 
 # Define Function For Each Screen
 def intro():
-    global RUNNING, MENU, END, INTRO, MUTE, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
+    global RUNNING, MENU, END, INTRO, MUTE, INSTRUCTIONS, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
 
     # Sets Framerate
     CLOCK.tick(60)
@@ -168,15 +168,10 @@ def intro():
     # Leave Game
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            RUNNING = False
-            END = False
-            MENU = False
             INTRO = False
         elif event.type == pygame.KEYDOWN:
-            MENU = False
-            RUNNING = True
-            END = False
             INTRO = False
+            INSTRUCTIONS = True
     # Draw Screen
     SCREEN.fill(BACKGROUND_C)
     end_text = font.render("Get Candy!", True, TITLE_C)
@@ -194,8 +189,45 @@ def intro():
 
     pygame.display.flip()
 
+def instructions():
+    global RUNNING, MENU, END, INTRO, MUTE, INSTRUCTIONS, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
+
+    # Sets Framerate
+    CLOCK.tick(60)
+
+    # Leave Game
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            INSTRUCTIONS = False
+        elif event.type == pygame.KEYDOWN:
+            RUNNING = True
+            INSTRUCTIONS = False
+
+    # Draw Screen
+    SCREEN.fill(BACKGROUND_C)
+    controls = font.render("W = UP and S = DOWN", True, TITLE_C)
+    controls_2 = font.render("Hit escape to access settings", True, TITLE_C)
+    controls_3 = font.render("Go off the screen to come out the other end", True, TITLE_C)
+    controls_4 = font.render("Change the difficulty to get more candies", True, TITLE_C)
+    start_text = font.render("Hit Any Key To Start", True, TITLE_C)
+    inst_text = font.render("Blue = 1 Candy", True, TITLE_C)
+    inst_text_2 = font.render("Red = 2 Candies", True, TITLE_C)
+    inst_text_3 = font.render("Orange = 5 Candies", True, TITLE_C)
+
+    
+    SCREEN.blit(controls, (50, 50))
+    SCREEN.blit(controls_2, (50, 110))
+    SCREEN.blit(controls_3, (50, 170))
+    SCREEN.blit(controls_4, (50, 230))
+    SCREEN.blit(inst_text, (50, 290))
+    SCREEN.blit(inst_text_2, (50, 350))
+    SCREEN.blit(inst_text_3, (50, 410))
+    SCREEN.blit(start_text, (300, 490))
+
+    pygame.display.flip()
+
 def running():
-    global RUNNING, MENU, END, INTRO, MUTE, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
+    global RUNNING, MENU, END, INTRO, MUTE, INSTRUCTIONS, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
 
     # Sets Framerate
     CLOCK.tick(60)
@@ -299,7 +331,7 @@ def running():
     pygame.display.flip()
 
 def end():
-    global RUNNING, MENU, END, INTRO, MUTE, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
+    global RUNNING, MENU, END, INTRO, MUTE, INSTRUCTIONS, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
 
     # Sets Framerate
     CLOCK.tick(60)
@@ -332,7 +364,7 @@ def end():
     SCREEN.fill(BACKGROUND_C)
     end_text = font.render("High Score: " + str(high_score_func()) , True, TITLE_C)
     score = font.render("Candies: " + str(player.score), True, TITLE_C)
-    instruction = font.render("Press any key to continue.", True, TITLE_C)
+    instruction = font.render("Press any key to try again.", True, TITLE_C)
     instruction_2 = font.render("Press escape to quit.", True, TITLE_C)
     SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/4, RESOLUTION[1]/2 - RESOLUTION[1]/6))
     SCREEN.blit(score, (RESOLUTION[0]-360 , 30))
@@ -341,7 +373,7 @@ def end():
     pygame.display.flip()
 
 def menu():
-    global RUNNING, MENU, END, INTRO, MUTE, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
+    global RUNNING, MENU, END, INTRO, MUTE, INSTRUCTIONS, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
 
     # Sets Framerate
     CLOCK.tick(60)
@@ -374,21 +406,26 @@ def menu():
     # Draw Screen
     SCREEN.fill(BACKGROUND_C)
     end_text = font.render("MENU ", True, TITLE_C)
-    SCREEN.blit(end_text, (RESOLUTION[0]/2 - RESOLUTION[0]/2.3, RESOLUTION[1]/2 - RESOLUTION[1]/6))
+    SCREEN.blit(end_text, (300, RESOLUTION[1]/2 - RESOLUTION[1]/6))
 
     mute_text = font.render("Press 'm' to {}".format(mute_state), True, TITLE_C)
-    SCREEN.blit(mute_text, (RESOLUTION[0]/2 - RESOLUTION[0]/2.3, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 100))
+    SCREEN.blit(mute_text, (50, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 100))
 
     dif_text = font.render("Press 'd' to change mode. Current Mode: {}".format(dif_state), True, TITLE_C)
-    SCREEN.blit(dif_text, (RESOLUTION[0]/2 - RESOLUTION[0]/2.3, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 200))
+    SCREEN.blit(dif_text, (50, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 200))
+
+    back_text = font.render("Hit escape to get back to the game", True, TITLE_C)
+    SCREEN.blit(back_text, (200, RESOLUTION[1]/2 - RESOLUTION[1]/6 + 300))
 
     pygame.display.flip()
 
 def main():
-    global RUNNING, MENU, END, INTRO, MUTE, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
+    global RUNNING, MENU, END, INTRO, MUTE, INSTRUCTIONS, barrier_spawn_rate, high_score, barriers, candies, health, dif_state
     
     while INTRO:
         intro()
+    while INSTRUCTIONS:
+        instructions()
     while RUNNING:
         running()
     while END:
@@ -444,6 +481,7 @@ END = False
 MENU = False
 INTRO = True
 MUTE = False
+INSTRUCTIONS = False
 dif_state = "easy"
 high_score_func()
 health = Health()
