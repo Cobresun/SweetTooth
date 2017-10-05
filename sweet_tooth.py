@@ -77,7 +77,7 @@ def spawn_barrier():
     if random.randint(0, 1) == 1:
         while True:
             x = RESOLUTION[0] + 1
-            y = random.randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, RESOLUTION[1]/30)
+            y = random.randrange(0, int(RESOLUTION[1]) - int(RESOLUTION[1]/3), int(RESOLUTION[1]/30))
             for barrier in barriers:
                 if barrier.rect.x == x or barrier.rect.y == y:
                     continue
@@ -87,7 +87,7 @@ def spawn_barrier():
     else:
         while True:
             x = RESOLUTION[0] + 1
-            y = random.randrange(0, RESOLUTION[1] - RESOLUTION[1]/3, RESOLUTION[1]/30)
+            y = random.randrange(0, int(RESOLUTION[1]) - int(RESOLUTION[1]/3), int(RESOLUTION[1]/30))
             for barrier in barriers:
                 if barrier.rect.x == x or barrier.rect.y == y:
                     continue
@@ -140,7 +140,6 @@ def collision(obj, obj2):
                 return False
             else:
                 del obj2
-                print "yolo"
     return True
 
 def rarity(candy):
@@ -313,7 +312,7 @@ def running():
     
     for candy in candies:
         if candy.colour != CHEESE:
-            pygame.draw.circle(SCREEN, candy.colour, (candy.rect.x, candy.rect.y), candy.rect.width/2, candy.rect.width/2)
+            pygame.draw.circle(SCREEN, candy.colour, (candy.rect.x, candy.rect.y), int(candy.rect.width/2), int(candy.rect.width/2))
         else:
             pygame.draw.rect(SCREEN, candy.colour, candy.rect)
     for barrier in barriers:
